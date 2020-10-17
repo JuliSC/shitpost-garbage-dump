@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>MASSIVE SHITPOST HAHAHAHA</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script type="text/javascript" th:src="@{/js/functions.js}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body onload="getAllMemes()">
+<div class="container">
+
+    <h1>Welcome to the shitpost garbage dump!</h1>
+    <h3 class="font-weight-light">Feel free to vomit on the floor while you're here</h3>
+
+    <form style="margin-bottom: 10px" id="meme-form">
+        <input id="meme" type="text" placeholder="SHIT HERE NOW!!">
+        <button type="submit">SHIT DO IT</button>
+    </form>
+    <table style="width: 100%; max-width: 200px" id="meme-table" class="table table-bordered table-striped">
+        <thead>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+</div>
+
+<script>
+    addMeme($("#meme-form"));
+</script>
+</body>
+<style>
+    table img {
+        max-width: 1000px;
+    }
+</style>
+</html>
