@@ -1,44 +1,52 @@
 package com.julisc.springshitpost.services;
 
 import com.julisc.springshitpost.models.Meme;
-
-import java.io.*;
+import org.springframework.stereotype.Repository;
+import java.net.URISyntaxException;
+import java.sql.*;
 import java.util.ArrayList;
-
 import java.util.List;
-import java.util.Scanner;
 
+@Repository
 public class MemeManager {
 
-    public MemeManager(){
-
+    private static Connection getConnection() throws URISyntaxException, SQLException {
+        String dbUrl = System.getenv("JDBC_DATABASE_URL");
+        return DriverManager.getConnection(dbUrl);
     }
 
-    public void dumpTheLoad(Meme load) throws IOException {
-        File garbageDump = new File("src/main/resources/static/assets/files/actual-fucking-garbage.txt");
+    public MemeManager(){
+    }
 
-        PrintWriter garbageTruck = new PrintWriter(new FileWriter(garbageDump, true));
-        garbageTruck.println(load.getMeme());
-        garbageTruck.close();
+    public int dumpTheLoad(Meme load) {
+        String sql = "INSERT INTO memes" + "(meme)" + "VALUES" + "(?)";
+        try {
+            PreparedStatement ps = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, load.getMeme());
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            rs.next();
+            return rs.getInt(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
+
     }
 
     public List<Meme> scavengeForShitposts() {
+        String sql = "SELECT * FROM memes";
+        List<Meme> memes = new ArrayList<>();
         try {
-            File garbageDump = new File("src/main/resources/static/assets/files/actual-fucking-garbage.txt");
-            if(!garbageDump.exists()){
-                garbageDump.getParentFile().mkdirs();
-                garbageDump.createNewFile();
+            PreparedStatement ps = getConnection().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                Meme meme = new Meme(rs.getString(2));
+                memes.add(meme);
             }
-
-            List<Meme> shitpostBackpack = new ArrayList<>();
-            Scanner shitpostFinder = new Scanner(garbageDump);
-            while(shitpostFinder.hasNextLine()) {
-                shitpostBackpack.add(new Meme(shitpostFinder.nextLine()));
-            }
-            return shitpostBackpack;
-        } catch(Exception e) {
-            System.out.println(e);
-            return new ArrayList<Meme>();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return memes;
     }
 }
