@@ -18,7 +18,7 @@ public class MemeManager {
     public MemeManager(){
     }
 
-    public int dumpTheLoad(Meme load) {
+    public int dumpTheLoad(Meme load) throws SQLException, URISyntaxException {
         String sql = "INSERT INTO memes" + "(meme)" + "VALUES" + "(?)";
         try {
             PreparedStatement ps = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -30,11 +30,11 @@ public class MemeManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        getConnection().close();
         return -1;
-
     }
 
-    public List<Meme> scavengeForShitposts() {
+    public List<Meme> scavengeForShitposts() throws SQLException, URISyntaxException {
         String sql = "SELECT * FROM memes";
         List<Meme> memes = new ArrayList<>();
         try {
@@ -47,6 +47,8 @@ public class MemeManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        getConnection().close();
         return memes;
     }
 }
