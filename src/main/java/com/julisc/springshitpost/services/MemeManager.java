@@ -62,6 +62,31 @@ public class MemeManager {
         return memes;
     }
 
+//    public boolean dumpTheLoad(Memes memes) {
+//        try {
+//            String dropTableIfExists = "DROP TABLE IF EXISTS memes";
+//            ps = getConnection().prepareStatement(dropTableIfExists);
+//            ps.executeUpdate();
+//
+//            String createTable = "CREATE TABLE memes (id serial primary key, meme varchar not null)";
+//            ps = getConnection().prepareStatement(createTable);
+//            ps.executeUpdate();
+//
+//            System.out.println(memes.getMemes());
+//
+//            for(Meme meme : memes.getMemes()) {
+//                String sql = "INSERT INTO memes" + "(meme)" + "VALUES" + "(?)";
+//                ps = getConnection().prepareStatement(sql);
+//                ps.setString(1, meme.getMeme());
+//                ps.executeUpdate();
+//            }
+//            return true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
+
     public boolean dumpTheLoad(Memes memes) {
         try {
             String dropTableIfExists = "DROP TABLE IF EXISTS memes";
@@ -72,13 +97,17 @@ public class MemeManager {
             ps = getConnection().prepareStatement(createTable);
             ps.executeUpdate();
 
-            System.out.println(memes.getMemes());
+            ps = getConnection().prepareStatement("INSERT INTO memes" + "(meme)" + "VALUES" + "(?)");
 
-            for(Meme meme : memes.getMemes()) {
-                String sql = "INSERT INTO memes" + "(meme)" + "VALUES" + "(?)";
-                ps = getConnection().prepareStatement(sql);
+            int i = 0;
+            for (Meme meme : memes.getMemes()) {
                 ps.setString(1, meme.getMeme());
-                ps.executeUpdate();
+                ps.addBatch();
+                i++;
+
+                if (i % 1000 == 0 || i == memes.getMemes().size()) {
+                    ps.executeBatch(); // Execute every 1000 items.
+                }
             }
             return true;
         } catch (Exception e) {
