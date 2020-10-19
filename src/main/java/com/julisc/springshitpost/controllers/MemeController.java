@@ -31,7 +31,7 @@ public class MemeController{
     }
 
     @GetMapping("api/get-all-memes")
-    public ResponseEntity<Memes> getAllMemes() throws SQLException, URISyntaxException {
+    public ResponseEntity<Memes> getAllMemes() {
         memes.setMemes(memeManager.scavengeForShitposts());
         return ResponseEntity.ok(memes);
     }
