@@ -17,7 +17,7 @@ public class Memes {
         this.memes = memes;
     }
 
-    public void addMeme(Meme meme) {
+    public void add(Meme meme) {
         memes.add(meme);
     }
 
